@@ -120,14 +120,11 @@ class OpenDocument:
     """
     thumbnail = None
 
-    def __init__(self, mimetype, add_generator=True):
+    def __init__(self, mimetype:str, add_generator:bool):
         """
         the constructor
-        @param mimetype a unicode string
         @param add_generator a boolean
         """
-        assert(type(mimetype)==type(u""))
-        assert(isinstance(add_generator,True.__class__))
 
         self.mimetype = mimetype
         self.childobjects = []
@@ -798,76 +795,58 @@ class OpenDocument:
 
         return result
 
-# Convenience functions
-def OpenDocumentChart():
-    """
-    Creates a chart document
-    @return an OpenDocument instance with chart mimetype
-    """
-    doc = OpenDocument(u'application/vnd.oasis.opendocument.chart')
-    doc.chart = Chart()
-    doc.body.addElement(doc.chart)
-    return doc
+# Moved various OpenDocument types to subclasses instead of constructors
+# to provide cleaner access to default properties
 
-def OpenDocumentDrawing():
-    """
-    Creates a drawing document
-    @return an OpenDocument instance with drawing mimetype
-    """
-    doc = OpenDocument(u'application/vnd.oasis.opendocument.graphics')
-    doc.drawing = Drawing()
-    doc.body.addElement(doc.drawing)
-    return doc
+class OpenDocumentChart(OpenDocument):
+    def __init__(self, add_generator:bool=True):
+        mimetype = 'application/vnd.oasis.opendocument.chart'
+        super().__init__(mimetype, add_generator)
+        self.chart = Chart()
+        self.body.addElement(self.chart)
 
-def OpenDocumentImage():
-    """
-    Creates an image document
-    @return an OpenDocument instance with image mimetype
-    """
-    doc = OpenDocument(u'application/vnd.oasis.opendocument.image')
-    doc.image = Image()
-    doc.body.addElement(doc.image)
-    return doc
+class OpenDocumentDrawing(OpenDocument):
+    def __init__(self, add_generator:bool=True):
+        mimetype = 'application/vnd.oasis.opendocument.graphics'
+        super().__init__(mimetype, add_generator)
+        self.drawing = Drawing()
+        self.body.addElement(self.drawing)
 
-def OpenDocumentPresentation():
-    """
-    Creates a presentation document
-    @return an OpenDocument instance with presentation mimetype
-    """
-    doc = OpenDocument(u'application/vnd.oasis.opendocument.presentation')
-    doc.presentation = Presentation()
-    doc.body.addElement(doc.presentation)
-    return doc
+class OpenDocumentImage(OpenDocument):
+    def __init__(self, add_generator:bool=True):
+        mimetype = 'application/vnd.oasis.opendocument.image'
+        super().__init__(mimetype, add_generator)
+        self.image = Image()
+        self.body.addElement(self.image)
 
-def OpenDocumentSpreadsheet():
-    """
-    Creates a spreadsheet document
-    @return an OpenDocument instance with spreadsheet mimetype
-    """
-    doc = OpenDocument(u'application/vnd.oasis.opendocument.spreadsheet')
-    doc.spreadsheet = Spreadsheet()
-    doc.body.addElement(doc.spreadsheet)
-    return doc
+class OpenDocumentPresentation(OpenDocument):
+    def __init__(self, add_generator:bool=True):
+        mimetype = 'application/vnd.oasis.opendocument.presentation'
+        super().__init__(mimetype, add_generator)
+        self.presentation = Presentation()
+        self.body.addElement(self.presentation)
 
-def OpenDocumentText():
-    """
-    Creates a text document
-    @return an OpenDocument instance with text mimetype
-    """
-    doc = OpenDocument(u'application/vnd.oasis.opendocument.text')
-    doc.text = Text()
-    doc.body.addElement(doc.text)
-    return doc
+class OpenDocumentSpreadsheet(OpenDocument):
+    def __init__(self, add_generator:bool=True):
+        mimetype = 'application/vnd.oasis.opendocument.spreadsheet'
+        super().__init__(mimetype, add_generator)
+        self.spreadsheet = Spreadsheet()
+        self.body.addElement(self.spreadsheet)
 
-def OpenDocumentTextMaster():
-    """
-    Creates a text master document
-    @return an OpenDocument instance with master mimetype
-    """
-    doc = OpenDocument(u'application/vnd.oasis.opendocument.text-master')
-    doc.text = Text()
-    doc.body.addElement(doc.text)
-    return doc
+class OpenDocumentText(OpenDocument):
+    def __init__(self, add_generator:bool=True):
+        mimetype = 'application/vnd.oasis.opendocument.text'
+        super().__init__(mimetype, add_generator)
+        self.mimetype = 'application/vnd.oasis.opendocument.text'
+        self.text = Text()
+        self.body.addElement(self.text)
+
+class OpenDocumentTextMaster(OpenDocument):
+    def __init__(self, add_generator:bool=True):
+        mimetype = 'application/vnd.oasis.opendocument.text-master'
+        super().__init__(mimetype, add_generator)
+        self.text = Text()
+        self.body.addElement(self.text)
 
 def __loadxmlparts(z, manifest, doc, objectpath):
     """
